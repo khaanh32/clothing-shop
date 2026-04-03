@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axiosClient from '../axiosClient';
-import { mockCategories } from '../api/mockData';
 import ProductCard from '../components/ProductCard';
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 
@@ -85,7 +84,7 @@ const Category = () => {
         <aside className="sidebar">
           <div className="filter-box">
             <div className="filter-title">
-              
+              <Filter style={{ width: '1.25rem', height: '1.25rem' }} />
               <h2>Danh mục</h2>
             </div>
             

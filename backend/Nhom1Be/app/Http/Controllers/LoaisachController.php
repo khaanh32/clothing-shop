@@ -1,26 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Sach;
+use App\Models\Loaisach;
 use Illuminate\Http\Request;
 
-class SachController extends Controller
+class LoaisachController extends Controller
 {
     public function index()
     {
-        $sachs = Sach::with('loaisach')->paginate(12);
-
+        $loaisach = Loaisach::with('sachs')->get();
         return response()->json([
             'success' => true,
-            'data'    => $sachs
+            'data'    => $loaisach
         ]);
     }
+
     public function show($id)
     {
-        $sach = Sach::with('loaisach')->findOrFail($id);
+
+        $loaisach = Loaisach::with('sachs')->findOrFail($id);
+        
         return response()->json([
             'success' => true,
-            'data'    => $sach
+            'data'    => $loaisach
         ]);
     }
+    
 }

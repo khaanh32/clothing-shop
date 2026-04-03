@@ -701,3 +701,401 @@ ul {
 .py-8 { padding: 2rem 0; }
 .text-center { text-align: center; }
 .font-bold { font-weight: bold; }
+
+/* Cart & Checkout Styles */
+.bg-light {
+  background-color: #f0f4f8;
+  min-height: calc(100vh - 70px);
+  padding-bottom: 4rem;
+}
+
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Step Indicator */
+.step-indicator-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-circle {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #94a3b8;
+  transition: all 0.3s;
+}
+
+.step-circle.active {
+  border-color: #334155;
+  color: #334155;
+}
+
+.step-circle.completed {
+  background-color: #334155;
+  border-color: #334155;
+  color: #fff;
+}
+
+.step-label {
+  font-weight: bold;
+  color: #94a3b8;
+  font-size: 1.125rem;
+}
+
+.step-label.active {
+  color: #334155;
+}
+
+.step-line {
+  height: 2px;
+  width: 4rem;
+  background-color: #cbd5e1;
+  margin: 0 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.step-line.active {
+  background-color: #334155;
+}
+
+/* Cards */
+.card {
+  background-color: #fff;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  margin-bottom: 1.5rem;
+}
+
+/* Cart Item */
+.cart-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.cart-item-img {
+  width: 120px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.cart-item-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cart-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cart-item-name {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #000;
+  max-width: 60%;
+}
+
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cart-item-bottom {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cart-item-price {
+  color: #ef4444;
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 2rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #fff;
+}
+
+.quantity-value {
+  padding: 0 0.75rem;
+  font-weight: 500;
+}
+
+.quantity-btns {
+  display: flex;
+  flex-direction: column;
+}
+
+.qty-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 0.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn:hover:not(:disabled) {
+  color: #0f172a;
+}
+
+.qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.remove-btn {
+  background: none;
+  border: 1px solid #ef4444;
+  border-radius: 50%;
+  color: #ef4444;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.remove-btn:hover:not(:disabled) {
+  background-color: #fef2f2;
+}
+
+.cart-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 1rem 0;
+}
+
+/* Total Card */
+.total-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.total-label {
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.total-value {
+  font-weight: bold;
+  color: #ef4444;
+}
+
+/* Buttons */
+.cart-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-outline {
+  flex: 1;
+  background-color: #fff;
+  border: 2px solid #334155;
+  color: #334155;
+  font-weight: bold;
+  font-size: 1.125rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background-color: #f8fafc;
+}
+
+.btn-primary {
+  flex: 1;
+  background-color: #3b4b66;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.125rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2c394f;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Checkout Layout */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .checkout-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.checkout-input {
+  background-color: #f3eadd;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+.readonly-input {
+  background-color: #f3eadd;
+  padding: 1rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.payment-methods {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.radio-label input {
+  display: none;
+}
+
+.radio-custom {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #334155;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.radio-label input:checked + .radio-custom::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: #334155;
+  border-radius: 50%;
+}
+
+.qr-card {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.qr-img {
+  width: 150px;
+  height: 150px;
+}
+
+.bank-info p {
+  font-size: 1.25rem;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+.total-card-small {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+.total-row.final {
+  justify-content: flex-end;
+}
+
+.final-price {
+  font-size: 1.25rem;
+}
+
+.success-msg-card {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.success-text {
+  color: #ef4444;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}

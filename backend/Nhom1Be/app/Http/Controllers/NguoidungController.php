@@ -7,32 +7,35 @@ use Illuminate\Support\Facades\Hash;
 
 class NguoidungController extends Controller
 {
-    public function index()
-    {
-        return Nguoidung::all();
-    }
-
-    public function store(Request $request)
-    {
-        return Nguoidung::create($request->all());
-    }
-
     public function show($id)
     {
-        return Nguoidung::find($id);
+        $user = Nguoidung::findOrFail($id);
+        return response()->json($user);
     }
 
     public function update(Request $request, $id)
     {
-        $user = Nguoidung::find($id);
-        $user->update($request->all());
+        $user = Nguoidung::findOrFail($id);
+        
+        $validatedData = $request->validate([
+            'ten_dang_nhap' => 'sometimes|string|max:100|unique:nguoidung,ten_dang_nhap,' . $id,
+            'email'         => 'sometimes|email|max:255|unique:nguoidung,email,' . $id,
+            'so_dien_thoai' => 'nullable|string|max:20',
+            'dia_chi'       => 'nullable|string',
+            'mat_khau'      => 'sometimes|string|min:6',
+        ]);
 
-        return $user;
-    }
+        if ($request->filled('mat_khau')) {
+            $validatedData['mat_khau'] = Hash::make($request->mat_khau);
+        }
 
-    public function destroy($id)
-    {
-        return Nguoidung::destroy($id);
+        $user->update($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cập nhật thông tin thành công',
+            'data'    => $user
+        ]);
     }
     public function acpregister(Request $request) {
         $request->validate([
@@ -42,6 +45,7 @@ class NguoidungController extends Controller
             'so_dien_thoai' => 'required|string|max:20',
             'dia_chi'       => 'required|string',
         ]);
+
         try {
             $user = Nguoidung::create([
                 'ten_dang_nhap' => $request->ten_dang_nhap,
@@ -52,13 +56,16 @@ class NguoidungController extends Controller
                 'role'          => 'khach_hang',
                 'provider'      => 'local'
             ]);
+
             return response()->json([
+                'success' => true,
                 'message' => 'Đăng ký tài khoản thành công!',
-                'user' => $user
+                'user'    => $user
             ], 201);
                             
         } catch (\Exception $e) {
             return response()->json([
+                'success' => false,
                 'message' => 'Lỗi hệ thống: ' . $e->getMessage()
             ], 500);
         }
@@ -69,23 +76,29 @@ class NguoidungController extends Controller
             'email'    => 'required|email',
             'mat_khau' => 'required'
         ]);
+
         $user = Nguoidung::where('email', $request->email)->first();
-    if (!$user || !Hash::check($request->mat_khau, $user->mat_khau)) {
+
+        if (!$user || !Hash::check($request->mat_khau, $user->mat_khau)) {
+            return response()->json([
+                "success" => false,
+                "message" => "Sai email hoặc mật khẩu"
+            ], 401);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
-            "message" => "Sai email hoặc mật khẩu"
-        ], 401);
-    }
-    $token = $user->createToken('auth_token')->plainTextToken;
-    return response()->json([
-        'message'      => 'Đăng nhập thành công',
-        'access_token' => $token,
-        'token_type'   => 'Bearer',
-        'user'         => [
-            'id'            => $user->id,
-            'ten_dang_nhap' => $user->ten_dang_nhap,
-            'email'         => $user->email,
-            'role'          => $user->role
-        ]
-    ], 200);
+            'success'      => true,
+            'message'      => 'Đăng nhập thành công',
+            'access_token' => $token,
+            'token_type'   => 'Bearer',
+            'user'         => [
+                'id'            => $user->id,
+                'ten_dang_nhap' => $user->ten_dang_nhap,
+                'email'         => $user->email,
+                'role'          => $user->role
+            ]
+        ], 200);
     }
 }

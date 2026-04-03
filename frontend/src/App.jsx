@@ -14,6 +14,9 @@ import Category from './pages/Category';
 import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Confirm from './pages/Confirm';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -25,6 +28,9 @@ const AnimatedRoutes = () => {
         <Route path="/product/:id" element={<PageWrapper><ProductDetail /></PageWrapper>} />
         <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
         <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
+        <Route path="/cart" element={<PageWrapper><Cart /></PageWrapper>} />
+        <Route path="/checkout" element={<PageWrapper><Checkout /></PageWrapper>} />
+        <Route path="/confirm" element={<PageWrapper><Confirm /></PageWrapper>} />
         <Route path="*" element={<PageWrapper><Home /></PageWrapper>} />
       </Routes>
     </AnimatePresence>

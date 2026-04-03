@@ -13,12 +13,12 @@ const Home = () => {
     const fetchBooks = async () => {
       try {
         const response = await axiosClient.get('/sach');
-        // Xử lý trường hợp Laravel trả về data bọc trong 'data' (ví dụ: Pagination hoặc Resource)
-        const allBooks = response.data.data || response.data;
+        const allBooks = response.data.data.data; 
         
-        // Giả lập phân loại cho trang chủ
-        setFlashSaleBooks(Array.isArray(allBooks) ? allBooks.slice(0, 4) : []);
-        setStoryBooks(Array.isArray(allBooks) ? allBooks.slice(4, 8) : []);
+        if (Array.isArray(allBooks)) {
+            setFlashSaleBooks(allBooks.slice(0, 4));
+            setStoryBooks(allBooks.slice(4, 8));
+        }
       } catch (error) {
         console.error('Lỗi khi lấy danh sách sách:', error);
       } finally {
