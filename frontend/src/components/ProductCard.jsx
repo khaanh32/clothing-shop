@@ -1,32 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// ── ProductCard tối giản theo đúng thiết kế mẫu ──────────────────────────────
 const ProductCard = ({ sach }) => {
-  // Định dạng giá tiền: xx.xxx VNĐ
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN').format(price) + ' VND';
-  };
+  const price = sach.gia_ban || sach.gia || 0;
+  const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n) + ' VND';
 
   return (
-    <Link 
-      to={`/product/${sach.id}`} 
-      className="product-card"
-    >
-      <div className="product-img-wrapper">
-        <img 
-          src={sach.anh_bia || 'https://picsum.photos/seed/book/300/400'} 
+    <Link to={`/product/${sach.id}`} className="pc2-card">
+      <div className="pc2-img-wrap">
+        <img
+          src={sach.anh_bia || `https://picsum.photos/seed/${sach.id}/240/320`}
           alt={sach.ten_sach}
-          className="product-img"
+          className="pc2-img"
+          loading="lazy"
           referrerPolicy="no-referrer"
         />
+        {sach.so_luong <= 0 && <span className="pc2-oos">Hết hàng</span>}
       </div>
-      <div className="product-info">
-        <h3 className="product-name">
-          {sach.ten_sach}
-        </h3>
-        <p className="product-price">
-          {formatPrice(sach.gia_ban || sach.gia)}
-        </p>
+      <div className="pc2-body">
+        <p className="pc2-name">{sach.ten_sach}</p>
+        <p className="pc2-price">{fmt(price)}</p>
       </div>
     </Link>
   );

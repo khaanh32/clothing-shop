@@ -1,52 +1,55 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import StepIndicator from '../components/StepIndicator';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { CheckCircle2, BookOpen, Home, Package } from 'lucide-react';
 
 const Confirm = () => {
   const navigate = useNavigate();
 
-  return (
-    <div className="bg-light">
-      <div className="page-container">
-        <StepIndicator currentStep={3} />
-        
-        <div className="checkout-layout">
-          <div className="checkout-left">
-            <div className="card checkout-form-card">
-              <h2 className="card-title">Thông tin thanh toán</h2>
-              <div className="checkout-form">
-                <div className="readonly-input">VO THAI ANH</div>
-                <div className="readonly-input">0948342040</div>
-                <div className="readonly-input">180 Cao Lỗ, Q8, TP. HCM</div>
-                
-                <div className="payment-methods" style={{ opacity: 0.7 }}>
-                  <label className="radio-label">
-                    <input type="radio" checked readOnly />
-                    <span className="radio-custom"></span>
-                    Chuyển khoản ngân hàng
-                  </label>
-                  <label className="radio-label">
-                    <input type="radio" disabled />
-                    <span className="radio-custom"></span>
-                    Thanh toán khi nhận hàng
-                  </label>
-                </div>
-              </div>
-            </div>
+  // Tự động về trang chủ sau 10 giây
+  useEffect(() => {
+    const t = setTimeout(() => navigate('/'), 10000);
+    return () => clearTimeout(t);
+  }, [navigate]);
 
-            <div className="card success-msg-card">
-              <p className="success-text">Đã xác nhận thanh toán thành công !</p>
-              <p className="success-text">Vui lòng xác nhận đặt hàng.</p>
-            </div>
-            
-            <button onClick={() => navigate('/')} className="btn-primary full-width" style={{ marginTop: '1rem' }}>
-              Xác nhận đặt hàng →
-            </button>
+  return (
+    <div className="cf-root">
+      <div className="cf-card">
+        {/* Icon thành công */}
+        <div className="cf-icon-wrap">
+          <CheckCircle2 size={56} className="cf-icon" strokeWidth={1.5} />
+          <div className="cf-icon-ring" />
+        </div>
+
+        <h1 className="cf-title">Đặt hàng thành công!</h1>
+        <p className="cf-sub">
+          Cảm ơn bạn đã tin tưởng <strong>BookOne</strong>. Đơn hàng của bạn đang được xử lý.
+        </p>
+
+        {/* Thông tin */}
+        <div className="cf-info-box">
+          <div className="cf-info-row">
+            <Package size={16} className="cf-info-icon" />
+            <span>Chúng tôi sẽ giao hàng trong <strong>2–5 ngày làm việc</strong></span>
           </div>
-          
-          <div className="checkout-right">
-            {/* Empty right side in the third image */}
+          <div className="cf-info-row">
+            <BookOpen size={16} className="cf-info-icon" />
+            <span>Email xác nhận đơn hàng đã được gửi đến tài khoản của bạn</span>
           </div>
+        </div>
+
+        {/* Auto redirect countdown */}
+        <p className="cf-redirect-note">
+          Tự động chuyển về trang chủ sau 10 giây...
+        </p>
+
+        {/* Buttons */}
+        <div className="cf-actions">
+          <Link to="/" className="cf-btn-home" id="back-home-btn">
+            <Home size={16} /> Trang chủ
+          </Link>
+          <Link to="/category" className="cf-btn-shop" id="continue-shopping-btn">
+            <BookOpen size={16} /> Tiếp tục mua sắm
+          </Link>
         </div>
       </div>
     </div>

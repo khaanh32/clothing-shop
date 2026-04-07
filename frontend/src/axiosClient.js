@@ -23,7 +23,11 @@ axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Token hết hạn hoặc chưa đăng nhập
+      // Nếu API trả về 401 do đăng nhập sai mật khẩu thì không văng trang
+      if (error.config && error.config.url && error.config.url.endsWith('/login')) {
+        return Promise.reject(error);
+      }
+      // Token hết hạn hoặc truy cập trái phép
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
       window.location.href = '/login'; // Ép văng ra trang login
