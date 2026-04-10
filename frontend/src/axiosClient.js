@@ -1,9 +1,22 @@
 // frontend/src/axiosClient.js
 import axios from 'axios';
 
-// 1. Instance cho Storefront (Laravel - Port 8000 / Render)
+// Tiện ích làm sạch URL (xóa xém dư thừa)
+const sanitizeURL = (url) => {
+  if (!url) return '';
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+};
+
+const USER_API_BASE = sanitizeURL(import.meta.env.VITE_API_USER_URL || 'https://nhom1be.onrender.com/api');
+const ADMIN_API_BASE = sanitizeURL(import.meta.env.VITE_API_ADMIN_URL || 'https://webchieut6.onrender.com/api');
+
+console.log('[API CONFIG] User Base:', USER_API_BASE);
+console.log('[API CONFIG] Admin Base:', ADMIN_API_BASE);
+
+// 1. Instance cho Storefront (Laravel)
 export const axiosUser = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://nhom1be.onrender.com/api',
+  baseURL: USER_API_BASE,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -11,48 +24,61 @@ export const axiosUser = axios.create({
   },
 });
 
-// 2. Instance cho Admin (Spring Boot - Port 8080 / Render)
+// 2. Instance cho Admin (Spring Boot)
 export const axiosAdmin = axios.create({
-  baseURL: import.meta.env.VITE_API_ADMIN_URL || 'https://webchieut6.onrender.com/api',
+  baseURL: ADMIN_API_BASE,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
 });
 
-// Interceptor cho User (Laravel)
-axiosUser.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+// Logger helper
+const logRequest = (config, name) => {
+  const fullUrl = `${config.baseURL || ''}${config.url}`;
+  console.log(`%c[API REQUEST - ${name}] %c${config.method?.toUpperCase()} %c${fullUrl}`, 
+    'color: #3b82f6; font-weight: bold', 'color: #10b981', 'color: #6b7280');
   return config;
-});
+};
 
-// Interceptor cho Admin (Spring Boot)
-axiosAdmin.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token'); // Giả định dùng chung token login từ Laravel
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+const logError = (error, name) => {
+  const status = error.response?.status || 'NETWORK ERROR';
+  const url = error.config?.url ? `${error.config.baseURL}${error.config.url}` : 'Unknown URL';
+  
+  console.error(`%c[API ERROR - ${name}] %cStatus: ${status} %cURL: ${url}`, 
+    'color: #ef4444; font-weight: bold', 'color: #f59e0b', 'color: #9ca3af');
+    
+  if (error.response?.data) {
+    console.log('[API ERROR DATA]', error.response.data);
   }
-  return config;
-});
-
-// Error handling chung
-const handleResponseError = (error) => {
-  if (error.response && error.response.status === 401) {
-    if (error.config && error.config.url && (error.config.url.endsWith('/login') || error.config.url.endsWith('/register'))) {
-      return Promise.reject(error);
+  
+  // Xử lý 401 Unauthorized
+  if (status === 401) {
+    if (!url.endsWith('/login') && !url.endsWith('/register')) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
     }
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
-    window.location.href = '/login';
   }
+  
   return Promise.reject(error);
 };
 
-axiosUser.interceptors.response.use(res => res, handleResponseError);
-axiosAdmin.interceptors.response.use(res => res, handleResponseError);
+// Setup Interceptors
+axiosUser.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return logRequest(config, 'USER');
+});
 
-// Xuất mặc định trỏ về User (để giữ tương thích cho các file cũ chưa update)
+axiosAdmin.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return logRequest(config, 'ADMIN');
+});
+
+axiosUser.interceptors.response.use(res => res, (err) => logError(err, 'USER'));
+axiosAdmin.interceptors.response.use(res => res, (err) => logError(err, 'ADMIN'));
+
 export default axiosUser;
