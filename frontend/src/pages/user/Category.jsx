@@ -162,7 +162,6 @@ const Category = () => {
       );
 
       if (matchedCat) {
-        // Map to Category ID
         setFilters(prev => ({ 
           ...prev, 
           loai_sach_id: matchedCat.id, 
