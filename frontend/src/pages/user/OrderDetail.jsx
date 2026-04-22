@@ -60,16 +60,16 @@ const OrderDetail = () => {
   };
 
   if (loading) return (
-    <div className="ds-page orderdetail-auto-1">
-      <Loader size={38} className="ds-spin orderdetail-auto-2" />
+    <div className="ds-page od-loading-wrap">
+      <Loader size={38} className="ds-spin od-spinner-color" />
     </div>
   );
   if (error || !order) return (
     <div className="ds-page">
-      <div className="ds-wrap orderdetail-auto-3">
-        <AlertCircle size={52} color="#dc2626" className="orderdetail-auto-4" />
-        <h2 className="orderdetail-auto-5">Không tìm thấy đơn hàng</h2>
-        <Link to="/orders" className="ds-btn-outline orderdetail-auto-6">
+      <div className="ds-wrap od-error-wrap">
+        <AlertCircle size={52} color="#dc2626" className="od-error-icon" />
+        <h2 className="od-error-title">Không tìm thấy đơn hàng</h2>
+        <Link to="/orders" className="ds-btn-outline od-error-btn">
           <ArrowLeft size={16} /> Quay lại danh sách
         </Link>
       </div>
@@ -98,7 +98,7 @@ const OrderDetail = () => {
           {/* Main Col */}
           <div className="od-col-main">
             {/* Products */}
-            <div className="ds-card orderdetail-auto-7">
+            <div className="ds-card od-breadcrumb">
               <h2 className="ds-card-title"><Package size={16} /> Sản phẩm đã đặt</h2>
               <div className="od-items">
                 {items.length === 0 && <p className="od-empty-text">Không có sản phẩm nào.</p>}
@@ -107,7 +107,7 @@ const OrderDetail = () => {
                     <img src={it.sach?.anh_bia || 'https://picsum.photos/seed/b/50/70'} alt="cover" className="od-img" />
                     <div className="od-meta">
                       <Link to={`/product/${it.sach_id}`} className="od-name">{it.sach?.ten_sach || `Sách #${it.sach_id}`}</Link>
-                      <span className="od-price-qty">{fmt(it.don_gia)} <span className="orderdetail-auto-8">x</span> {it.so_luong}</span>
+                      <span className="od-price-qty">{fmt(it.don_gia)} <span className="od-bread-sep">x</span> {it.so_luong}</span>
                     </div>
                     <span className="od-total">{fmt(it.thanh_tien)}</span>
                   </div>
@@ -129,7 +129,7 @@ const OrderDetail = () => {
 
           {/* Side Col */}
           <div className="od-col-side">
-            <div className="ds-card orderdetail-auto-9">
+            <div className="ds-card od-summary-sticky">
               <h2 className="ds-card-title"><FileText size={16} /> Tổng quan đơn hàng</h2>
               <div className="od-sum-bd">
                 <div className="od-sum-row">
@@ -137,7 +137,7 @@ const OrderDetail = () => {
                   <span className="od-sum-val">{fmtDate(order.ngay_tao)}</span>
                 </div>
                 <div className="od-sum-row">
-                  <span className="od-sum-lbl orderdetail-auto-10"><Truck size={14}/> Thanh toán:</span>
+                  <span className="od-sum-lbl od-flex-center"><Truck size={14}/> Thanh toán:</span>
                   <span className="od-sum-val">{order.phuong_thuc_thanh_toan}</span>
                 </div>
 

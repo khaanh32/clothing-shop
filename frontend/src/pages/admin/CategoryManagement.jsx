@@ -141,17 +141,17 @@ const CategoryPublisherManagement = () => {
 
       <AnimatePresence>
         {showModal && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="admin-modal-overlay">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.98, y: 10 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98, y: 10 }}
-              transition={{ duration: 0.33, ease: [0.5, 0, 0, 0.75] }}
-              style={{ width: '100%', maxWidth: '400px', borderRadius: '12px', background: 'var(--admin-bg-pure)', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="admin-modal-content"
+              style={{ maxWidth: '400px' }}
             >
               <div style={{ padding: '20px 32px', borderBottom: '1px solid var(--admin-divider)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 500 }}>{editingCat ? 'Cập nhật danh mục' : 'Thêm mới danh mục'}</h3>
-                <button onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ minWidth: '32px', minHeight: '32px', padding: 0, borderRadius: '50%' }}><X size={16} /></button>
+                <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ minWidth: '32px', minHeight: '32px', padding: 0, borderRadius: '50%' }}><X size={16} /></button>
               </div>
               
               <form onSubmit={handleSubmit} style={{ padding: '32px' }}>

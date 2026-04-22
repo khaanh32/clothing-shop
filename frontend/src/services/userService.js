@@ -14,6 +14,7 @@ export const bookAPI = {
   getAll: (params) => axios.get('/sach', { params }),
   getDetail: (id) => axios.get(`/sach/${id}`),
   getFiltered: (params) => axios.get('/sach/filter', { params }),
+  search: (params) => axios.get('/sach/search', { params }),
 };
 
 // ================= QUẢN LÝ DANH MỤC =================

@@ -175,7 +175,7 @@ const Header = () => {
         <nav className="hd4-mob-nav">
           <Link to="/"         className="hd4-mob-a" onClick={closeM}>Trang chủ</Link>
           <Link to="/category" className="hd4-mob-a" onClick={closeM}>Sản phẩm</Link>
-          <Link to="/about"    className="hd4-mob-a" onClick={closeM}>ℹVề chúng tôi</Link>
+          <Link to="/about"    className="hd4-mob-a" onClick={closeM}>Về chúng tôi</Link>
           <Link to="/contact"  className="hd4-mob-a" onClick={closeM}>Liên hệ</Link>
           {user && <>
             <Link to="/profile" className="hd4-mob-a" onClick={closeM}>Tài khoản</Link>

@@ -481,6 +481,6 @@
   .cat-drawer { width: 85%; max-width: 340px; }
 }
 
-/* Generated classes from inline styles */
-.category-auto-1 { margin-bottom: 0px !important; }
-.category-auto-2 { width: 100%; }
+/* ── Helpers ── */
+.cat-group-label-nomargin { margin-bottom: 0px !important; }
+.cat-input-full            { width: 100%; }

@@ -110,16 +110,16 @@
   .crt-price-mobile { display: block; }
 }
 
-/* Generated classes from inline styles */
-.cart-auto-1 { width: 72px; height: 96px; border-radius: 8px; flex-shrink: 0; }
-.cart-auto-2 { flex: 1; display: flex; flexDirection: column; gap: 8px; }
-.cart-auto-3 { height: 14px; width: 70%; }
-.cart-auto-4 { height: 11px; width: 40%; }
-.cart-auto-5 { height: 14px; width: 80px; }
-.cart-auto-6 { height: 36px; width: 104px; border-radius: 8px; }
-.cart-auto-7 { height: 16px; width: 90px; }
-.cart-auto-8 { height: 32px; width: 32px; border-radius: 8px; }
-.cart-auto-9 { color: #d1d5db; margin-bottom: 12px; }
-.cart-auto-10 { width: max-content; padding: 0.65rem 1.8rem; }
-.cart-auto-11 { width: max-content; padding: 0.65rem 1.8rem; gap: 7px; }
-.cart-auto-12 { color: #059669; fontWeight: 700; }
+/* ── Skeleton & Helpers ── */
+.cart-sk-img      { width: 72px; height: 96px; border-radius: 8px; flex-shrink: 0; }
+.cart-sk-meta     { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.cart-sk-line-1   { height: 14px; width: 70%; }
+.cart-sk-line-2   { height: 11px; width: 40%; }
+.cart-sk-price    { height: 14px; width: 80px; }
+.cart-sk-qty      { height: 36px; width: 104px; border-radius: 8px; }
+.cart-sk-total    { height: 16px; width: 90px; }
+.cart-sk-del      { height: 32px; width: 32px; border-radius: 8px; }
+.cart-empty-icon  { color: #d1d5db; margin-bottom: 12px; }
+.cart-login-btn   { width: max-content; padding: 0.65rem 1.8rem; }
+.cart-browse-btn  { width: max-content; padding: 0.65rem 1.8rem; gap: 7px; }
+.cart-free-tag    { color: #059669; font-weight: 700; }

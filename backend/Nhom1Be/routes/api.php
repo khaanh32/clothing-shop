@@ -12,15 +12,12 @@ use App\Http\Controllers\LoaisachController;
 Route::post('/login',[NguoidungController::class,'login']);
 Route::post('/register',[NguoidungController::class,'acpregister']);
 Route::get('/sach/filter', [SachController::class, 'filter']);
+Route::get('/sach/search', [SachController::class, 'search']);
 Route::get('/sach', [SachController::class, 'index']);
 Route::get('/sach/{id}', [SachController::class, 'show']);
-Route::post('/sach/add', [SachController::class, 'store']);
 
 Route::get('/loaisach', [LoaisachController::class, 'index']);
 Route::get('/loaisach/{id}', [LoaisachController::class, 'show']);
-
-Route::get('/category', [LoaisachController::class, 'index']);
-Route::get('/category/{id}', [LoaisachController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // người dùng
@@ -33,8 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/giohang/{id}', [GiohangController::class, 'destroy']);
 
     // đơn hàng
-    Route::apiResource('donhang', DonhangController::class);
+    Route::get('donhang', [DonhangController::class, 'index']);
     Route::post('/checkout', [DonhangController::class, 'checkout']);
+    Route::get('/donhang/{id}', [DonhangController::class, 'show']);
+    Route::delete('/donhang/{id}', [DonhangController::class, 'huydon']);
 
     // chi tiết giỏ hàng
     Route::post('/chitietgiohang/them', [ChitietgiohangController::class, 'themVaoGio']);

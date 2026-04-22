@@ -11,7 +11,7 @@ export const userAxios = axios.create({
 });
 
 // 2. Instance cho Spring Boot (Admin)
-const adminBaseURL = (import.meta.env.VITE_API_ADMIN_URL || import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:8080/api').replace(/\/+$/, '');
+const adminBaseURL = (import.meta.env.VITE_API_ADMIN_URL || import.meta.env.VITE_ADMIN_API_URL || '/api-admin').replace(/\/+$/, '');
 export const adminAxios = axios.create({
   baseURL: adminBaseURL,
   headers: {

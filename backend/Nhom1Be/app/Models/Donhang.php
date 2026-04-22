@@ -27,7 +27,7 @@ class Donhang extends Model
 
     public function nguoidung()
     {
-        return $this->belongsTo(nguoidung::class, 'nguoi_dung_id');
+        return $this->belongsTo(Nguoidung::class, 'nguoi_dung_id');
     }
 
     public function chitietdonhangs()

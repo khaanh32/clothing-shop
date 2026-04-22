@@ -47,7 +47,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="ds-page contact-auto-1">
+    <div className="ds-page ctm-page-no-padding">
       
       {/* ── Hero ── */}
       <section className="ctm-hero">
@@ -92,7 +92,7 @@ const Contact = () => {
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3920.0280148993136!2d106.6870835!3d10.7340878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f9a86a5b7e3%3A0x789c58c87c4b5cb2!2sC%C3%A1o%20L%E1%BB%97%2C%20Ch%C3%A1nh%20H%C6%B0ng%2C%20Qu%E1%BA%ADn%208%2C%20Th%C3%A0nh%20ph%E1%BB%91%20H%E1%BB%93%20Ch%C3%AD%20Minh!5e0!3m2!1svi!2svn!4v1680000000000!5m2!1svi!2svn"
                   width="100%"
                   height="100%"
-                  className="ctm-map-iframe contact-auto-2"
+                  className="ctm-map-iframe ctm-map-no-border"
                 />
               </div>
            </div>
@@ -102,8 +102,8 @@ const Contact = () => {
               {sent ? (
                 <div className="ctm-sent">
                   <h3 className="ctm-h3">Gửi thành công</h3>
-                  <p className="ctm-p contact-auto-3">Cảm ơn bạn đã kết nối. Chúng tôi sẽ sớm phản hồi mail của bạn.</p>
-                  <button className="ds-btn-outline contact-auto-4" onClick={() => setSent(false)}>
+                  <p className="ctm-p ctm-success-msg">Cảm ơn bạn đã kết nối. Chúng tôi sẽ sớm phản hồi mail của bạn.</p>
+                  <button className="ds-btn-outline ctm-reset-btn" onClick={() => setSent(false)}>
                     Tạo yêu cầu mới
                   </button>
                 </div>
@@ -157,7 +157,7 @@ const Contact = () => {
                       {errors.noi_dung && <span className="ctm-err">{errors.noi_dung}</span>}
                   </div>
 
-                  <button className="ds-btn-primary contact-auto-5" type="submit" disabled={submitting}>
+                  <button className="ds-btn-primary ctm-submit-btn-mod" type="submit" disabled={submitting}>
                     {submitting ? <Loader size={16} className="ds-spin" /> : <Send size={16} />}
                     Gửi yêu cầu
                   </button>

@@ -17,9 +17,8 @@ class Chitietgiohang extends Model
         'thanh_tien'
     ];
 
-    protected $primaryKey = null;
-
     public $timestamps = false;
+    protected $primaryKey = null;
 
     public function giohang()
     {

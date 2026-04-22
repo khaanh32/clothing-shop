@@ -19,7 +19,7 @@ const UserManagement = () => {
   const [totalPages, setTotalPages] = useState(0);
   
   const [formData, setFormData] = useState({
-    hoTen: '', email: '', matKhau: '', soDienThoai: '', diaChi: '', quyen: 'USER'
+    tenDangNhap: '', email: '', matKhau: '', soDienThoai: '', diaChi: '', role: 'khach_hang'
   });
 
   useEffect(() => {
@@ -58,16 +58,16 @@ const UserManagement = () => {
     if (user) {
       setEditingUser(user);
       setFormData({ 
-        hoTen: user?.hoTen || '', 
+        tenDangNhap: user?.tenDangNhap || user?.hoTen || '', 
         email: user?.email || '', 
         matKhau: '', 
         soDienThoai: user?.soDienThoai || '', 
         diaChi: user?.diaChi || '', 
-        quyen: user?.quyen || 'USER' 
+        role: user?.role || user?.quyen || 'khach_hang'
       });
     } else {
       setEditingUser(null);
-      setFormData({ hoTen: '', email: '', matKhau: '', soDienThoai: '', diaChi: '', quyen: 'USER' });
+      setFormData({ tenDangNhap: '', email: '', matKhau: '', soDienThoai: '', diaChi: '', role: 'khach_hang' });
     }
     setShowModal(true);
   };
@@ -79,11 +79,18 @@ const UserManagement = () => {
     setSubmitting(true);
     const loadingToast = toast.loading('Đang xử lý...');
     try {
+      let payload = { ...formData };
+      
+      // Nếu đang sửa và không nhập mật khẩu mới -> Xóa trường matKhau khỏi payload để Backend không đổi
+      if (editingUser && !formData.matKhau) {
+        delete payload.matKhau;
+      }
+
       if (editingUser) {
-        await AdminAPI.updateUser(editingUser.id, formData);
+        await AdminAPI.updateUser(editingUser.id, payload);
         toast.success('Cập nhật thành công', { id: loadingToast });
       } else {
-        await AdminAPI.addUser(formData);
+        await AdminAPI.addUser(payload);
         toast.success('Thêm người dùng mới thành công', { id: loadingToast });
       }
       setShowModal(false);
@@ -157,7 +164,7 @@ const UserManagement = () => {
                 <tr key={user?.id}>
                   <td>
                     <div>
-                      <div style={{ fontWeight: 500, color: 'var(--admin-text-head)', fontSize: '14px' }}>{user?.hoTen || 'Thành viên'}</div>
+                      <div style={{ fontWeight: 500, color: 'var(--admin-text-head)', fontSize: '14px' }}>{user?.tenDangNhap || user?.hoTen || 'Thành viên'}</div>
                       <div style={{ fontSize: '12px', color: 'var(--admin-text-muted)' }}>{user?.email}</div>
                     </div>
                   </td>
@@ -166,10 +173,10 @@ const UserManagement = () => {
                   <td className="text-center">
                     <span style={{ 
                       fontSize: '11px', fontWeight: 500, padding: '4px 10px', borderRadius: '4px',
-                      background: user?.quyen === 'ADMIN' ? 'rgba(62, 106, 225, 0.1)' : 'var(--admin-bg-ash)',
-                      color: user?.quyen === 'ADMIN' ? 'var(--admin-primary)' : 'var(--admin-text-muted)'
+                      background: (user?.role || user?.quyen) === 'admin' || (user?.role || user?.quyen) === 'ADMIN' ? 'rgba(62, 106, 225, 0.1)' : 'var(--admin-bg-ash)',
+                      color: (user?.role || user?.quyen) === 'admin' || (user?.role || user?.quyen) === 'ADMIN' ? 'var(--admin-primary)' : 'var(--admin-text-muted)'
                     }}>
-                      {user?.quyen || 'USER'}
+                      {user?.role || user?.quyen || 'khach_hang'}
                     </span>
                   </td>
                   <td className="text-center">
@@ -193,45 +200,50 @@ const UserManagement = () => {
 
       <AnimatePresence>
         {showModal && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div className="admin-modal-overlay">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.98, y: 10 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98, y: 10 }}
-              transition={{ duration: 0.33, ease: [0.5, 0, 0, 0.75] }}
-              style={{ width: '100%', maxWidth: '450px', background: 'var(--admin-bg-pure)', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="admin-modal-content"
+              style={{ maxWidth: '450px' }}
             >
               <div style={{ padding: '20px 32px', borderBottom: '1px solid var(--admin-divider)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ margin: 0, fontWeight: 500, fontSize: '18px' }}>{editingUser ? 'Sửa Thành viên' : 'Thêm Thành viên'}</h3>
-                <button onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ minWidth: '32px', minHeight: '32px', padding: 0, borderRadius: '50%' }}><X size={18} /></button>
+                <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ minWidth: '32px', minHeight: '32px', padding: 0, borderRadius: '50%' }}><X size={18} /></button>
               </div>
 
               <form onSubmit={handleSubmit} style={{ padding: '32px' }}>
                 <div className="form-group">
-                  <label className="form-label">Họ và tên</label>
-                  <input required className="form-control" value={formData.hoTen} onChange={(e) => setFormData({...formData, hoTen: e.target.value})} />
+                  <label className="form-label">Tên đăng nhập</label>
+                  <input required className="form-control" value={formData.tenDangNhap} onChange={(e) => setFormData({...formData, tenDangNhap: e.target.value})} disabled={!!editingUser} placeholder="VD: nguyenvana" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Email</label>
                   <input required type="email" className="form-control" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} disabled={!!editingUser} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Mật khẩu {editingUser && '(Để trống nếu không đổi)'}</label>
+                  <label className="form-label">Mật khẩu {editingUser && '(để trống nếu không đổi)'}</label>
                   <input type="password" className="form-control" value={formData.matKhau} onChange={(e) => setFormData({...formData, matKhau: e.target.value})} required={!editingUser} />
                 </div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div className="form-group">
-                    <label className="form-label">SĐT</label>
-                    <input className="form-control" value={formData.soDienThoai} onChange={(e) => setFormData({...formData, soDienThoai: e.target.value})} />
+                    <label className="form-label">Số điện thoại</label>
+                    <input className="form-control" value={formData.soDienThoai} onChange={(e) => setFormData({...formData, soDienThoai: e.target.value})} placeholder="0912..." />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Phân quyền</label>
-                    <select className="form-control" value={formData.quyen} onChange={(e) => setFormData({...formData, quyen: e.target.value})}>
-                      <option value="USER">USER</option>
-                      <option value="ADMIN">ADMIN</option>
+                    <select className="form-control" value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})}>
+                      <option value="khach_hang">👤 Khách hàng</option>
+                      <option value="admin">🛡️ Admin</option>
                     </select>
                   </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Địa chỉ</label>
+                  <input className="form-control" value={formData.diaChi} onChange={(e) => setFormData({...formData, diaChi: e.target.value})} placeholder="Số nhà, đường, quận, thành phố" />
                 </div>
 
                 <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-end', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--admin-divider)' }}>

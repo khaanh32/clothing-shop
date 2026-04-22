@@ -47,11 +47,12 @@
 .ords-cancel-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* Generated classes from inline styles */
-.orders-auto-1 { display: flex; justify-content: center; padding: 5rem 0; }
-.orders-auto-2 { color: #1e3a5f; }
-.orders-auto-3 { text-align: center; padding: 4rem 2rem; }
-.orders-auto-4 { color: #d1d5db; margin-bottom: 14px; }
-.orders-auto-5 { font-weight: 800; color: #111827; margin-bottom: 8px; }
-.orders-auto-6 { color: #6b7280; margin-bottom: 20px; }
-.orders-auto-7 { width: auto; padding: 0.7rem 2rem; margin: 0 auto; }
-.orders-auto-8 { display: flex; gap: 0.75rem; }
+/* ── Status Loaders & Empty State ── */
+.ords-loading-wrap  { display: flex; justify-content: center; padding: 5rem 0; }
+.ords-spinner-color { color: #1e3a5f; }
+.ords-empty-wrap    { text-align: center; padding: 4rem 2rem; }
+.ords-empty-icon    { color: #d1d5db; margin-bottom: 14px; }
+.ords-empty-title   { font-weight: 800; color: #111827; margin-bottom: 8px; }
+.ords-empty-sub     { color: #6b7280; margin-bottom: 20px; }
+.ords-empty-btn     { width: auto; padding: 0.7rem 2rem; margin: 0 auto; }
+.ords-actions-wrap  { display: flex; gap: 0.75rem; }

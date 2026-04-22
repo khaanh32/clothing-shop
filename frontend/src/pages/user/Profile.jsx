@@ -37,7 +37,7 @@ const Profile = () => {
             email: freshUser.email || '',
           });
         }
-      }).catch(err => console.log('Có lỗi khi lấy fresh profile', err));
+      }).catch(err => console.error('Có lỗi khi lấy fresh profile', err));
     }
   }, [user]);
 

@@ -14,10 +14,8 @@ class Chitietdonhang extends Model
         'don_gia',
         'thanh_tien'
     ];
-
     public $incrementing = false;
     protected $primaryKey = null;
-
     public $timestamps = false;
 
     public function donhang()

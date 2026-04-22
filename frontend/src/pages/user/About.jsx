@@ -40,7 +40,7 @@ const REASONS = [
 // ── Component ────────────────────────────────────────────────────────────────
 const About = () => {
   return (
-    <div className="ds-page about-auto-1">
+    <div className="ds-page abm-page-no-padding">
       {/* ── Hero Minimalist ── */}
       <section className="abm-hero">
         <div className="ds-wrap abm-hero-inner">
@@ -92,15 +92,15 @@ const About = () => {
       <section className="abm-reasons">
         <div className="ds-wrap">
           <div className="abm-reasons-hd">
-            <span className="abm-eyebrow about-auto-2"><Target size={15}/> Tiêu chuẩn</span>
-            <h2 className="abm-h2 about-auto-3">Sự khác biệt của chúng tôi</h2>
+            <span className="abm-eyebrow abm-eyebrow-center"><Target size={15}/> Tiêu chuẩn</span>
+            <h2 className="abm-h2 abm-h2-center">Sự khác biệt của chúng tôi</h2>
           </div>
           <div className="abm-reasons-grid">
             {REASONS.map((r, i) => (
               <div key={i} className="abm-reason-card ds-card">
                 <div className="abm-reason-icon">{r.icon}</div>
                 <h3 className="abm-reason-title">{r.title}</h3>
-                <p className="abm-p about-auto-4">{r.desc}</p>
+                <p className="abm-p abm-p-small">{r.desc}</p>
               </div>
             ))}
           </div>
@@ -109,8 +109,8 @@ const About = () => {
 
       {/* ── Đội ngũ ── */}
       <section className="abm-team">
-         <div className="ds-wrap about-auto-5">
-            <span className="abm-eyebrow about-auto-6"><Users size={15}/> Con người</span>
+         <div className="ds-wrap abm-team-center">
+            <span className="abm-eyebrow abm-eyebrow-center"><Users size={15}/> Con người</span>
             <h2 className="abm-h2">Những "Mọt Sách" Điều Hành</h2>
             <div className="abm-team-list">
               <div className="abm-team-item">
@@ -136,13 +136,13 @@ const About = () => {
       <section className="abm-cta">
         <div className="ds-wrap">
           <div className="abm-cta-box ds-card">
-            <h2 className="abm-h2 about-auto-7">Cùng lật mở trang mới</h2>
-            <p className="abm-p about-auto-8">
+            <h2 className="abm-h2 abm-cta-h2">Cùng lật mở trang mới</h2>
+            <p className="abm-p abm-cta-p">
               Hãy để chúng tôi đồng hành cùng không gian tri thức của bạn.
             </p>
             <div className="abm-cta-btns">
-               <Link to="/category" className="ds-btn-primary about-auto-9">Khám phá cửa hàng</Link>
-               <Link to="/contact" className="ds-btn-outline about-auto-10">Trò chuyện</Link>
+               <Link to="/category" className="ds-btn-primary abm-cta-btn-primary">Khám phá cửa hàng</Link>
+               <Link to="/contact" className="ds-btn-outline abm-cta-btn-outline">Trò chuyện</Link>
             </div>
           </div>
         </div>

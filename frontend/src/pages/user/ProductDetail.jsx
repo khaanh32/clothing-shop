@@ -21,21 +21,21 @@ const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n || 0) + '₫';
 const Skeleton = () => (
   <div className="pd3-root">
     <div className="pd3-wrap">
-      <div className="pd3-sk productdetail-auto-1" />
+      <div className="pd3-sk pd3-sk-breadcrumb" />
       <div className="pd3-main-card">
         <div className="pd3-main-grid">
           <div className="pd3-img-col">
-            <div className="pd3-sk productdetail-auto-2" />
+            <div className="pd3-sk pd3-sk-image" />
           </div>
-          <div className="pd3-info-col productdetail-auto-3">
-            <div className="pd3-sk productdetail-auto-4" />
-            <div className="pd3-sk productdetail-auto-5" />
-            <div className="pd3-sk productdetail-auto-6" />
-            <div className="pd3-sk productdetail-auto-7" />
-            <div className="pd3-sk productdetail-auto-8" />
-            <div className="productdetail-auto-9">
-              <div className="pd3-sk productdetail-auto-10" />
-              <div className="pd3-sk productdetail-auto-11" />
+          <div className="pd3-info-col pd3-info-stack">
+            <div className="pd3-sk pd3-sk-badge" />
+            <div className="pd3-sk pd3-sk-title" />
+            <div className="pd3-sk pd3-sk-author" />
+            <div className="pd3-sk pd3-sk-price" />
+            <div className="pd3-sk pd3-sk-meta" />
+            <div className="pd3-sk-actions-wrap">
+              <div className="pd3-sk pd3-sk-btn" />
+              <div className="pd3-sk pd3-sk-btn" />
             </div>
           </div>
         </div>
@@ -48,15 +48,15 @@ const Skeleton = () => (
 const ErrorUI = ({ onRetry }) => (
   <div className="pd3-root">
     <div className="pd3-wrap">
-      <div className="productdetail-auto-12">
-        <AlertCircle size={52} color="#e53e3e" className="productdetail-auto-13" />
-        <h2 className="productdetail-auto-14">
+      <div className="pd3-error-wrap">
+        <AlertCircle size={52} color="#e53e3e" className="pd3-error-icon" />
+        <h2 className="pd3-error-title">
           Không tìm thấy sản phẩm
         </h2>
-        <p className="productdetail-auto-15">
+        <p className="pd3-error-sub">
           Sản phẩm có thể đã bị xóa hoặc đường dẫn không đúng.
         </p>
-        <div className="productdetail-auto-16">
+        <div className="pd3-error-actions">
           <Link to="/category" className="pd3-btn-outline">
             <BookOpen size={15} /> Xem sản phẩm khác
           </Link>
@@ -76,7 +76,7 @@ const RelCard = ({ sach }) => (
       <img
         src={getImageUrl(sach.anh_bia)}
         alt={sach.ten_sach} loading="lazy"
-        onError={(e) => { e.target.onerror = null; e.target.src = '/images/placeholder-book.jpg'; }}
+        onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x600/e2e8f0/475569?text=Chua+co+anh'; }}
       />
       {sach.so_luong <= 0 && <span className="pd3-oos-badge">Hết hàng</span>}
     </div>
@@ -148,13 +148,8 @@ const ProductDetail = () => {
     if (qty > book.so_luong) { toast.error(`Chỉ còn ${book.so_luong} sản phẩm trong kho`); return; }
     setAdding(true);
     try {
-      console.log('--- ADD TO CART DEBUG ---');
-      console.log('Payload:', { sach_id: book.id, so_luong: qty });
-      
       const res = await cartAPI.addToCart({ sach_id: book.id, so_luong: qty });
       
-      console.log('Response:', res);
-
       if (res?.success) { 
         toast.success(res.message || 'Đã thêm vào giỏ hàng'); 
         fetchCart(); 
@@ -174,7 +169,10 @@ const ProductDetail = () => {
     setBuying(true);
     try {
       const res = await cartAPI.addToCart({ sach_id: book.id, so_luong: qty });
-      if (res?.success) { fetchCart(); navigate('/checkout'); }
+      if (res?.success) { 
+        await fetchCart(); 
+        navigate('/checkout'); 
+      }
       else { toast.error(res?.message || 'Có lỗi xảy ra'); setBuying(false); }
     } catch (e) { toast.error(e.response?.data?.message || 'Không thể thêm vào giỏ hàng'); setBuying(false); }
   };
@@ -182,9 +180,10 @@ const ProductDetail = () => {
   if (loading) return <Skeleton />;
   if (error || !book) return <ErrorUI onRetry={fetchBook} />;
 
-  const oos        = book.so_luong <= 0;
-  const price      = book.gia_ban || book.gia || 0;
-  const hasDisc    = book.gia_ban && book.gia && book.gia_ban < book.gia;
+  const isNgungBan  = Number(book.trang_thai) === 0;
+  const oos         = book.so_luong <= 0 || isNgungBan;
+  const price       = book.gia_ban || book.gia || 0;
+  const hasDisc     = book.gia_ban && book.gia && book.gia_ban < book.gia;
 
   return (
     <div className="pd3-root">
@@ -209,7 +208,7 @@ const ProductDetail = () => {
                 <img
                   src={getImageUrl(book.anh_bia)}
                   alt={book.ten_sach} className="pd3-img"
-                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/placeholder-book.jpg'; }}
+                  onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x600/e2e8f0/475569?text=Chua+co+anh'; }}
                 />
                 {oos && <div className="pd3-img-oos">Hết hàng</div>}
               </div>
@@ -247,9 +246,11 @@ const ProductDetail = () => {
 
               {/* Tình trạng kho */}
               <div className={`pd3-stock${oos ? ' oos' : ''}`}>
-                {oos
-                  ? <><AlertCircle size={13} /> Hết hàng</>
-                  : <><CheckCircle2 size={13} /> Còn hàng <em>({book.so_luong} cuốn)</em></>
+                {isNgungBan 
+                  ? <><AlertCircle size={13} /> Sản phẩm ngưng bán</>
+                  : oos
+                    ? <><AlertCircle size={13} /> Hết hàng</>
+                    : <><CheckCircle2 size={13} /> Còn hàng <em>({book.so_luong} cuốn)</em></>
                 }
               </div>
 
@@ -339,7 +340,7 @@ const ProductDetail = () => {
                   <tr>
                     <td><Package size={13}/> Tình trạng</td>
                     <td style={{ color: oos ? '#dc2626' : '#059669', fontWeight: 600 }}>
-                      {oos ? 'Hết hàng' : `Còn ${book.so_luong} cuốn`}
+                      {isNgungBan ? 'Ngưng bán' : oos ? 'Hết hàng' : `Còn ${book.so_luong} cuốn`}
                     </td>
                   </tr>
                 </tbody>
@@ -370,7 +371,7 @@ const ProductDetail = () => {
         {(loadRel || related.length > 0) && (
           <div className="pd3-related-card">
             <div className="pd3-rel-hd">
-              <h2 className="pd3-section-title productdetail-auto-17">
+              <h2 className="pd3-section-title pd3-section-title-mod">
                 <span className="pd3-title-bar" />
                 Có thể bạn cũng thích
               </h2>
@@ -379,13 +380,13 @@ const ProductDetail = () => {
             <div className="pd3-rel-grid">
               {loadRel
                 ? [...Array(5)].map((_, i) => (
-                    <div key={i} className="pd3-rel-card productdetail-auto-18">
+                    <div key={i} className="pd3-rel-card pd3-rel-card-sk">
                       <div className="pd3-rel-img">
-                        <div className="pd3-sk productdetail-auto-19" />
+                        <div className="pd3-sk pd3-rel-img-sk" />
                       </div>
                       <div className="pd3-rel-body">
-                        <div className="pd3-sk productdetail-auto-20" />
-                        <div className="pd3-sk productdetail-auto-21" />
+                        <div className="pd3-sk pd3-rel-name-sk" />
+                        <div className="pd3-sk pd3-rel-price-sk" />
                       </div>
                     </div>
                   ))

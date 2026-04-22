@@ -1,10 +1,13 @@
 
 export const getImageUrl = (path) => {
-  if (!path) return '/images/placeholder-book.jpg';
+  if (!path) return 'https://placehold.co/400x600/e2e8f0/475569?text=Chua+co+anh';
   
-  // Nếu là URL tuyệt đối (http...) hoặc blob (preview), giữ nguyên
-  if (path.startsWith('http') || path.startsWith('blob:')) {
-    return path;
+  // Chuẩn hóa đường dẫn: Đổi tất cả dấu gạch chéo ngược (\) thành gạch chéo xuôi (/)
+  const normalizedPath = path.replace(/\\/g, '/');
+
+  // Nếu là URL tuyệt đối (http...), blob hoặc đường dẫn cục bộ bắt đầu bằng /
+  if (normalizedPath.startsWith('http') || normalizedPath.startsWith('blob:') || normalizedPath.startsWith('/')) {
+    return normalizedPath;
   }
 
   // Lấy Base URL của User Backend (nhom1be.onrender.com)
@@ -14,9 +17,9 @@ export const getImageUrl = (path) => {
   const rootDomain = apiBase.replace(/\/api$/, '');
 
   // Xử lý logic đường dẫn tương đương với Laravel
-  if (path.startsWith('assets/')) {
-    return `${rootDomain}/${path}`;
+  if (normalizedPath.startsWith('assets/')) {
+    return `${rootDomain}/${normalizedPath}`;
   }
   
-  return `${rootDomain}/assets/product/${path}`;
+  return `${rootDomain}/assets/product/${normalizedPath}`;
 };

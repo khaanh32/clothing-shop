@@ -2806,9 +2806,10 @@
         .hx-ql-item:hover .hx-ql-ico { background: #dbeafe; transform: scale(1.05); }
 
         /* Generated classes from inline styles */
-        .home-auto-1 { pointer-events: none; }
-        .home-auto-2 { width: 100%; height: 100%; }
-        .home-auto-3 { height: 12px; width: 85%; margin-bottom: 5px; }
-        .home-auto-4 { height: 12px; width: 60%; margin-bottom: 10px; }
-        .home-auto-5 { height: 12px; width: 45%; margin-bottom: 6px; }
-        .home-auto-6 { height: 14px; width: 50%; }
+        /* ── Home Page Helpers ── */
+        .home-hero-content { pointer-events: none; }
+        .home-hero-bg      { width: 100%; height: 100%; }
+        .home-sk-title     { height: 12px; width: 85%; margin-bottom: 5px; }
+        .home-sk-text      { height: 12px; width: 60%; margin-bottom: 10px; }
+        .home-sk-meta      { height: 12px; width: 45%; margin-bottom: 6px; }
+        .home-sk-btn       { height: 14px; width: 50%; }

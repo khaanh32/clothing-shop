@@ -21,32 +21,26 @@ class DonhangController extends Controller
             'phuong_thuc_thanh_toan' => 'required|in:transfer,cod',
             'ghi_chu'                => 'nullable|string'
         ]);
-
         $userId = $request->user()->id;
 
         $giohang = Giohang::with('chitietgiohangs.sach')
             ->where('nguoi_dung_id', $userId)
             ->first();
-
         if (!$giohang || $giohang->chitietgiohangs->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Giỏ hàng của bạn đang trống!'
             ], 400);
         }
-
         try {
             DB::beginTransaction();
-
             $tongTien = 0;
             $tongSoLuongSach = 0;
-
             foreach ($giohang->chitietgiohangs as $item) {
                 $giaHienTai = $item->sach->gia_ban ?? $item->don_gia;
                 $tongTien += $giaHienTai * $item->so_luong;
                 $tongSoLuongSach += $item->so_luong;
             }
-
             $donhang = Donhang::create([
                 'nguoi_dung_id'          => $userId,
                 'tong_tien'              => $tongTien,
@@ -96,66 +90,73 @@ class DonhangController extends Controller
             ], 500);
         }
     }
-
     public function index(Request $request)
     {
         $userId = $request->user()->id;
-        $orders = Donhang::where('nguoi_dung_id', $userId)
-                         ->orderBy('id', 'desc')
-                         ->get();
-        return response()->json($orders);
-    }
 
+        $donhangs = Donhang::with('chitietdonhangs.sach')
+            ->where('nguoi_dung_id', $userId)
+            ->orderBy('ngay_tao', 'desc')
+            ->get();
+
+        return response()->json($donhangs);
+    }
     public function show(Request $request, $id)
     {
         $userId = $request->user()->id;
-        $order = Donhang::with(['chitietdonhangs.sach', 'thanhtoans'])
-                        ->where('nguoi_dung_id', $userId)
-                        ->findOrFail($id);
-        return response()->json($order);
-    }
 
-    public function destroy(Request $request, $id)
+        $donhang = Donhang::with('chitietdonhangs.sach')
+            ->where('nguoi_dung_id', $userId)
+            ->findOrFail($id);
+
+        return response()->json($donhang);
+    }
+    public function huydon(Request $request, $id)
     {
         $userId = $request->user()->id;
-        $order = Donhang::where('nguoi_dung_id', $userId)->findOrFail($id);
-
-        if ($order->trang_thai !== 'CHỜ_XÁC_NHẬN') {
+        $donhang = Donhang::with('chitietdonhangs')
+            ->where('nguoi_dung_id', $userId)
+            ->where('id', $id)
+            ->whereIn('trang_thai', [
+                'CHỜ_XÁC_NHẬN',
+                'ĐÃ_XÁC_NHẬN'
+            ])
+            ->first();
+        if (!$donhang) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không thể hủy đơn hàng ở trạng thái này'
-            ], 400);
+                'message' => 'Đơn hàng không tồn tại hoặc không thể hủy.'
+            ], 404);
         }
-
         try {
             DB::beginTransaction();
-
-            $order->update(['trang_thai' => 'ĐÃ_HỦY']);
-
-            // Hoàn lại số lượng sách
-            foreach ($order->chitietdonhangs as $chitiet) {
-                $sach = Sach::find($chitiet->sach_id);
+            foreach ($donhang->chitietdonhangs as $item) {
+                $sach = Sach::lockForUpdate()
+                    ->find($item->sach_id);
                 if ($sach) {
-                    $sach->increment('so_luong', $chitiet->so_luong);
+                    $sach->increment(
+                        'so_luong',
+                        $item->so_luong
+                    );
                 }
             }
-
-            // Hủy thanh toán nếu có
-            foreach ($order->thanhtoans as $thanhToan) {
-                $thanhToan->update(['trang_thai' => 'DA_HUY']);
-            }
-
+            $donhang->update([
+                'trang_thai' => 'ĐÃ_HỦY'
+            ]);
             DB::commit();
-
             return response()->json([
                 'success' => true,
-                'message' => 'Hủy đơn hàng thành công'
+                'message' => 'Đơn hàng đã được hủy thành công.'
             ]);
+
         } catch (\Exception $e) {
+
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'message' => 'Lỗi khi hủy đơn: ' . $e->getMessage()
+                'message' => 'Quá trình hủy đơn hàng thất bại: '
+                    . $e->getMessage()
             ], 500);
         }
     }

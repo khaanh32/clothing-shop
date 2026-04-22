@@ -27,15 +27,15 @@ class SachController extends Controller
             'mo_ta'        => 'nullable|string',
         ]);
         try {
-            if ($request->hasFile('anh_bia')) {
+                if ($request->hasFile('anh_bia')) {
+                $path = $request->file('anh_bia')->store('books', 'public');
+                $validatedData['anh_bia'] = asset('storage/' . $path);
                 $file = $request->file('anh_bia');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $file->move(public_path('assets/product'), $fileName);
                 $validatedData['anh_bia'] = 'assets/product/' . $fileName;
             }
-
             $sach = Sach::create($validatedData);
-
             return response()->json([
                 'success' => true,
                 'message' => 'Thêm sách thành công',
@@ -95,6 +95,26 @@ class SachController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $sach
+        ]);
+    }
+    public function search(Request $request)
+    {
+        $query = Sach::with('loaisach');
+
+        if ($request->filled('search')) {
+
+            $keyword = strtolower($request->search);
+
+            $query->whereRaw("
+                LOWER(REPLACE(unaccent(ten_sach), ' ', ''))
+                ILIKE
+                LOWER(REPLACE(unaccent(?), ' ', ''))
+            ", ["%$keyword%"]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $query->paginate(12)
         ]);
     }
 }

@@ -9,19 +9,16 @@ class GiohangController extends Controller
     public function index(Request $request)
     {
         $userId = $request->user()->id;
-        $giohang = Giohang::firstOrCreate(
+        $giohang = Giohang::with('chitietgiohangs.sach')
+                        ->firstOrCreate(
                             ['nguoi_dung_id' => $userId]
                         );
-        
-        $giohang->load('chitietgiohangs.sach');
-        
         $tongTienThanhToan = 0;
-        if ($giohang->chitietgiohangs) {
-            foreach ($giohang->chitietgiohangs as $item) {
+        if ($giohang->chitietgiohang) {
+            foreach ($giohang->chitietgiohang as $item) {
                 $tongTienThanhToan += $item->thanh_tien;
             }
         }
-
         return response()->json([
             'success' => true,
             'data' => [
@@ -43,20 +40,23 @@ class GiohangController extends Controller
             'data' => $giohang
         ], 201);
     }
-    public function destroy(Request $request, $id)
+    function update(Request $request, $id)
     {
-    $giohang = Giohang::findOrFail($id);
-
-        if ($giohang->nguoi_dung_id !== $request->user()->id) {
+        $giohang = Giohang::find($id);
+        if (!$giohang) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bạn không có quyền xóa giỏ hàng này'
-            ], 403);
+                'message' => 'Giỏ hàng không tồn tại'
+            ], 404);
         }
-        $giohang->delete();
+        $validated = $request->validate([
+            'nguoi_dung_id' => 'required|exists:nguoidung,id|unique:giohang,nguoi_dung_id,' . $id
+        ]);
+        $giohang->update($validated);
         return response()->json([
             'success' => true,
-            'message' => 'Đã xóa giỏ hàng thành công'
+            'message' => 'Đã cập nhật giỏ hàng',
+            'data' => $giohang
         ]);
     }
 }

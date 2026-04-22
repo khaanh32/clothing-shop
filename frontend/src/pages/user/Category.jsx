@@ -49,7 +49,7 @@ const Pagination = ({ current, total, onPage }) => {
 const FilterPanel = ({ hasActiveFilter, clearFilters, filters, categories, handleFilter }) => (
   <div className="cat-filter-content">
     <div className="cat-filter-header-inline">
-      <span className="cat-group-label category-auto-1">Tùy chọn lọc</span>
+      <span className="cat-group-label cat-group-label-nomargin">Tùy chọn lọc</span>
       {hasActiveFilter && (
         <button className="cat-clear-btn" onClick={clearFilters}>Xóa </button>
       )}
@@ -82,7 +82,7 @@ const FilterPanel = ({ hasActiveFilter, clearFilters, filters, categories, handl
           placeholder="Tìm tên nhà xuất bản..."
           value={filters.nha_xuat_ban}
           onChange={e => handleFilter('nha_xuat_ban', e.target.value)}
-          className="cat-price-input category-auto-2"
+          className="cat-price-input cat-input-full"
         />
       </div>
     </div>
@@ -150,64 +150,100 @@ const Category = () => {
       .catch(() => {});
   }, []);
 
-  // header lọc loại sách , nhà xuất bản 
+  // Loại bỏ logic filter local ngu ngốc
   useEffect(() => {
-    const searchQ = searchParams.get('search');
-    if (searchQ && categories.length > 0) {
-      const q = searchQ.trim().toLowerCase();
-      
-      // 1. Tìm loại sách
-      const matchedCat = categories.find(cat => 
-        cat.ten_loai.toLowerCase().includes(q)
-      );
-
-      if (matchedCat) {
-        setFilters(prev => ({ 
-          ...prev, 
-          loai_sach_id: matchedCat.id, 
-          nha_xuat_ban: '' 
-        }));
-      } else {
-        // 2. Tìm nhà xuất bản
-        setFilters(prev => ({ 
-          ...prev, 
-          loai_sach_id: '', 
-          nha_xuat_ban: searchQ.trim() 
-        }));
-      }
+    if (searchParams.get('search')) {
       setCurrentPage(1);
     }
-  }, [searchParams, categories]);
+  }, [searchParams]);
 
   const fetchBooks = useCallback(async () => {
     setLoading(true);
     setError(false);
     try {
-      const params = { 
-        page: currentPage, 
-        loai_sach_id: filters.loai_sach_id,
-        nha_xuat_ban: filters.nha_xuat_ban,
-        gia_min: filters.gia_min,
-        gia_max: filters.gia_max,
-        sort_by: filters.sort_by || 'moi_nhat'
-      };
+      const searchQ = searchParams.get('search');
+      let r;
+
+      if (searchQ && searchQ.trim() !== '') {
+        try {
+          // 1. Thử gọi API search gốc (Chỉ chạy được chuẩn trên PostgreSQL - Production)
+          r = await bookAPI.search({ search: searchQ.trim(), page: currentPage });
+        } catch (searchErr) {
+          // 2. FALLBACK cho Local (MySQL) bị lỗi 500 do hàm unaccent / ILIKE
+          console.warn('Backend search failed (likely MySQL compatibility issue). Falling back to client-side search...');
+          
+          // Lấy trang 1 để biết tổng số trang
+          const firstPageRes = await bookAPI.getAll({ page: 1 });
+          let allBooks = [];
+          
+          if (firstPageRes.success && firstPageRes.data) {
+            allBooks = [...firstPageRes.data.data];
+            const lastPg = firstPageRes.data.last_page;
+            
+            // Lấy song song các trang còn lại nếu có
+            if (lastPg > 1) {
+              const promises = [];
+              for (let i = 2; i <= lastPg; i++) {
+                promises.push(bookAPI.getAll({ page: i }));
+              }
+              const results = await Promise.all(promises);
+              results.forEach(res => {
+                if (res.success && res.data) {
+                  allBooks.push(...res.data.data);
+                }
+              });
+            }
+          }
+          
+          // Lọc thủ công ở FE
+          const keyword = searchQ.trim().toLowerCase();
+          const filtered = allBooks.filter(b => 
+            b.ten_sach?.toLowerCase().includes(keyword) || 
+            b.tac_gia?.toLowerCase().includes(keyword) ||
+            b.loaisach?.ten_loai?.toLowerCase().includes(keyword)
+          );
+          
+          // Phân trang nội bộ
+          const size = 12;
+          const start = (currentPage - 1) * size;
+          const paginatedData = filtered.slice(start, start + size);
+          
+          r = {
+            success: true,
+            data: {
+              data: paginatedData,
+              last_page: Math.ceil(filtered.length / size) || 1,
+              total: filtered.length,
+              current_page: currentPage
+            }
+          };
+        }
+      } else {
+        const params = { 
+          page: currentPage, 
+          loai_sach_id: filters.loai_sach_id,
+          nha_xuat_ban: filters.nha_xuat_ban,
+          gia_min: filters.gia_min,
+          gia_max: filters.gia_max,
+          sort_by: filters.sort_by || 'moi_nhat'
+        };
+        r = await bookAPI.getFiltered(params);
+      }
       
-      const r = await bookAPI.getFiltered(params);
-      
-      if (r.success && r.data) {
-        // Laravel Paginate: { current_page, data: [], last_page, total }
+      if (r && r.success && r.data) {
         setBooks(r.data.data || []);
         setTotalPages(r.data.last_page || 1);
         setTotalItems(r.data.total || 0);
       } else {
         setError(true);
       }
-    } catch {
+    } catch (e) {
+      console.error(e);
       setError(true);
     } finally {
       setLoading(false);
     }
-  }, [filters, currentPage]);
+  }, [filters, currentPage, searchParams]);
 
   useEffect(() => {
     const id = setTimeout(fetchBooks, 400);

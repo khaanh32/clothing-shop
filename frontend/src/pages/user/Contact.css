@@ -48,9 +48,9 @@
   .ctm-field-group { grid-template-columns: 1fr; }
 }
 
-/* Generated classes from inline styles */
-.contact-auto-1 { padding: 0 !important; background-color: #ffffff !important; }
-.contact-auto-2 { border: 0; }
-.contact-auto-3 { margin-bottom: 1.5rem; }
-.contact-auto-4 { width: auto !important; }
-.contact-auto-5 { margin-top: 1rem !important; width: auto !important; padding: 0.9rem 2.5rem !important; }
+/* ── Helpers ── */
+.ctm-page-no-padding { padding: 0 !important; background-color: #ffffff !important; }
+.ctm-map-no-border   { border: 0; }
+.ctm-success-msg     { margin-bottom: 1.5rem; }
+.ctm-reset-btn       { width: auto !important; }
+.ctm-submit-btn-mod  { margin-top: 1rem !important; width: auto !important; padding: 0.9rem 2.5rem !important; }

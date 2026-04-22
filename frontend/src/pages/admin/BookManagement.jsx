@@ -103,13 +103,20 @@ const BookManagement = () => {
     setSubmitting(true);
     const loadingToast = toast.loading('Đang xử lý...');
     try {
+      const categoryId = parseInt(formData.loai_sach_id);
+      if (isNaN(categoryId)) {
+        toast.error('Vui lòng chọn danh mục hợp lệ');
+        setSubmitting(false);
+        return;
+      }
+
       const payload = {
         tenSach: formData.tenSach,
         tacGia: formData.tacGia,
         nhaXuatBan: formData.nhaXuatBan,
         gia: parseFloat(formData.gia) || 0,
         soLuong: parseInt(formData.soLuong) || 0,
-        loaiSach: { id: parseInt(formData.loai_sach_id) },
+        loaiSach: { id: categoryId },
         moTa: formData.moTa,
         trangThai: parseInt(formData.trangThai),
         anhBia: formData.anhBia,
@@ -259,17 +266,17 @@ const BookManagement = () => {
 
       <AnimatePresence>
         {showModal && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div className="admin-modal-overlay">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.98, y: 10 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98, y: 10 }}
-              transition={{ duration: 0.33, ease: [0.5, 0, 0, 0.75] }}
-              style={{ width: '100%', maxWidth: '800px', background: 'var(--admin-bg-pure)', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="admin-modal-content"
+              style={{ maxWidth: '800px' }}
             >
               <div style={{ padding: '20px 32px', borderBottom: '1px solid var(--admin-divider)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ margin: 0, fontWeight: 500, fontSize: '18px' }}>{editingBook ? 'Cập nhật Sản phẩm' : 'Thêm Sản phẩm mới'}</h3>
-                <button onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ minWidth: '32px', minHeight: '32px', padding: 0, borderRadius: '50%' }}><X size={18} /></button>
+                <button type="button" onClick={() => setShowModal(false)} className="btn btn-secondary" style={{ minWidth: '32px', minHeight: '32px', padding: 0, borderRadius: '50%' }}><X size={18} /></button>
               </div>
 
               <form onSubmit={handleSubmit} style={{ padding: '32px', maxHeight: '80vh', overflowY: 'auto' }}>
@@ -284,6 +291,10 @@ const BookManagement = () => {
                     <input required className="form-control" value={formData.tacGia} onChange={(e) => setFormData({...formData, tacGia: e.target.value})} />
                   </div>
                   <div className="form-group">
+                    <label className="form-label">Nhà xuất bản</label>
+                    <input className="form-control" value={formData.nhaXuatBan} onChange={(e) => setFormData({...formData, nhaXuatBan: e.target.value})} placeholder="VD: NXB Trẻ" />
+                  </div>
+                  <div className="form-group" style={{ gridColumn: 'span 2' }}>
                     <label className="form-label">Danh mục</label>
                     <select className="form-control" value={formData.loai_sach_id} onChange={(e) => setFormData({...formData, loai_sach_id: e.target.value})}>
                       {(categories || []).map(c => <option key={c.id} value={c.id}>{c.tenLoai}</option>)}
@@ -300,8 +311,29 @@ const BookManagement = () => {
                   </div>
 
                   <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                     <label className="form-label">Đường dẫn ảnh</label>
+                     <label className="form-label">Đường dẫn ảnh bìa</label>
                      <input className="form-control" value={formData.anhBia} onChange={(e) => setFormData({...formData, anhBia: e.target.value})} placeholder="https://..." />
+                  </div>
+
+                  {/* Thông số kỹ thuật */}
+                  <div className="form-group">
+                    <label className="form-label">Số trang</label>
+                    <input type="number" min="0" className="form-control" value={formData.soTrang} onChange={(e) => setFormData({...formData, soTrang: e.target.value})} placeholder="VD: 320" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Trọng lượng (gram)</label>
+                    <input type="number" min="0" className="form-control" value={formData.trongLuong} onChange={(e) => setFormData({...formData, trongLuong: e.target.value})} placeholder="VD: 450" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Kích thước (cm)</label>
+                    <input className="form-control" value={formData.kichThuoc} onChange={(e) => setFormData({...formData, kichThuoc: e.target.value})} placeholder="VD: 14.5 x 20.5 cm" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Trạng thái</label>
+                    <select className="form-control" value={formData.trangThai} onChange={(e) => setFormData({...formData, trangThai: parseInt(e.target.value)})}>
+                      <option value={1}>Đang bán</option>
+                      <option value={0}>Ngưng bán</option>
+                    </select>
                   </div>
 
                   <div className="form-group" style={{ gridColumn: 'span 2' }}>

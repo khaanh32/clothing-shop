@@ -9,6 +9,7 @@ import {
   BookOpen, Loader,
 } from 'lucide-react';
 import '../../styles/design-system.css';
+import { getImageUrl } from '../../utils';
 import './Cart.css';
 
 const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n || 0) + 'đ';
@@ -16,22 +17,22 @@ const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n || 0) + 'đ';
 /* ── Skeleton row ── */
 const SkRow = () => (
   <div className="crt-row">
-    <div className="ds-sk cart-auto-1" />
-    <div className="cart-auto-2">
-      <div className="ds-sk cart-auto-3" />
-      <div className="ds-sk cart-auto-4" />
+    <div className="ds-sk cart-sk-img" />
+    <div className="cart-sk-meta">
+      <div className="ds-sk cart-sk-line-1" />
+      <div className="ds-sk cart-sk-line-2" />
     </div>
-    <div className="ds-sk cart-auto-5" />
-    <div className="ds-sk cart-auto-6" />
-    <div className="ds-sk cart-auto-7" />
-    <div className="ds-sk cart-auto-8" />
+    <div className="ds-sk cart-sk-price" />
+    <div className="ds-sk cart-sk-qty" />
+    <div className="ds-sk cart-sk-total" />
+    <div className="ds-sk cart-sk-del" />
   </div>
 );
 
 /* ── Empty state ── */
 const Empty = ({ title, sub, action }) => (
   <div className="crt-empty">
-    <ShoppingCart size={54} className="cart-auto-9" />
+    <ShoppingCart size={54} className="cart-empty-icon" />
     <h2 className="crt-empty-title">{title}</h2>
     <p className="crt-empty-sub">{sub}</p>
     {action}
@@ -97,13 +98,13 @@ const Cart = () => {
         {/* Chưa đăng nhập */}
         {!user && !loadingCart ? (
           <Empty title="Vui lòng đăng nhập" sub="Bạn cần đăng nhập để xem giỏ hàng"
-            action={<Link to="/login" className="ds-btn-primary cart-auto-10">Đăng nhập ngay</Link>} />
+            action={<Link to="/login" className="ds-btn-primary cart-login-btn">Đăng nhập ngay</Link>} />
         ) : 
         
         /* Giỏ hàng trống */
         !loadingCart && currentItems.length === 0 ? (
           <Empty title="Giỏ hàng đang trống" sub="Hãy chọn thêm sách để bắt đầu mua sắm"
-            action={<Link to="/category" className="ds-btn-primary cart-auto-11"><BookOpen size={16} />Khám phá sách</Link>} />
+            action={<Link to="/category" className="ds-btn-primary cart-browse-btn"><BookOpen size={16} />Khám phá sách</Link>} />
         ) : (
           
         /* Có sản phẩm */
@@ -134,10 +135,10 @@ const Cart = () => {
                         <div className="crt-item-info">
                           <Link to={`/product/${item.sach_id}`} className="crt-img-wrap">
                             <img 
-                              src={item.sach?.anh_bia || item.sach?.image || ''} 
+                              src={getImageUrl(item.sach?.anh_bia || item.sach?.image)} 
                               alt={item.sach?.ten_sach || 'Sách'} 
                               className="crt-img" 
-                              onError={(e) => { e.target.src = 'https://picsum.photos/seed/book/80/110'; }}
+                              onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x600/e2e8f0/475569?text=Chua+co+anh'; }}
                               referrerPolicy="no-referrer" 
                             />
                           </Link>
@@ -179,7 +180,7 @@ const Cart = () => {
                 <h2 className="ds-card-title">Tóm tắt đơn hàng</h2>
                 <div className="crt-sum-body">
                   <div className="crt-sum-row"><span>Tạm tính ({cartCount} sản phẩm)</span><span>{fmt(total)}</span></div>
-                  <div className="crt-sum-row"><span>Phí vận chuyển</span><span className="cart-auto-12">Miễn phí</span></div>
+                  <div className="crt-sum-row"><span>Phí vận chuyển</span><span className="cart-free-tag">Miễn phí</span></div>
                   <div className="crt-sum-divider" />
                   <div className="crt-sum-total"><span>Tổng cộng</span><span className="crt-sum-amount">{fmt(total)}</span></div>
                   <button className="ds-btn-primary crt-checkout-btn" onClick={() => navigate('/checkout')} disabled={loadingCart || currentItems.length === 0} id="proceed-checkout-btn">

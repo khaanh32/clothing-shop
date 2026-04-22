@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
-import { orderAPI } from '../../services/userService';
+import { orderAPI, userAPI } from '../../services/userService';
 import {
   User, Phone, MapPin, MessageSquare, CreditCard, Truck,
   CheckCircle2, ShoppingCart, Loader, AlertCircle
 } from 'lucide-react';
 import { getImageUrl } from '../../utils';
+import { motion } from 'motion/react';
 import '../../styles/design-system.css';
 import './Checkout.css';
 
@@ -30,7 +31,8 @@ const Field = ({ ico: Ico, id, label, type='text', rows, form, errors, touched, 
         <Ico size={15} className="ds-input-ico" style={rows ? { top: '14px' } : {}} />
         {rows ? (
           <textarea
-            className={`ds-input${err ? ' has-error' : ok ? ' is-valid' : ''} checkout-auto-1`}
+            id={id}
+            className={`ds-input ck-textarea${err ? ' has-error' : ok ? ' is-valid' : ''}`}
             rows={rows} placeholder={`Nhập ${label.toLowerCase()}...`}
             value={form[id]} onChange={e => onChange(id, e.target.value)} onBlur={() => onBlur(id)}
           />
@@ -41,7 +43,7 @@ const Field = ({ ico: Ico, id, label, type='text', rows, form, errors, touched, 
              value={form[id]} onChange={e => onChange(id, e.target.value)} onBlur={() => onBlur(id)}
            />
         )}
-        {ok && !rows && <CheckCircle2 size={15} color="#059669" className="checkout-auto-2" />}
+        {ok && !rows && <CheckCircle2 size={15} color="#059669" style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />}
       </div>
       {err && <div className="ds-field-error"><AlertCircle size={11} /> {err}</div>}
     </div>
@@ -152,7 +154,11 @@ const Checkout = () => {
           {/* LEFT COL */}
           <div className="ck-col-main">
             {/* Delivery Info */}
-            <div className="ds-card checkout-auto-3">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="ds-card"
+            >
               <h2 className="ds-card-title"><MapPin size={16} /> Thông tin giao hàng</h2>
               <div className="ck-card-bd">
                 <div className="ck-field-grid">
@@ -162,10 +168,15 @@ const Checkout = () => {
                 <Field id="dia_chi_giao_hang" label="Địa chỉ giao hàng" ico={MapPin} rows={3} form={form} errors={errors} touched={touched} onChange={handleChange} onBlur={handleBlur} />
                 <Field id="ghi_chu"         label="Ghi chú đơn hàng"    ico={MessageSquare} rows={2} form={form} errors={errors} touched={touched} onChange={handleChange} onBlur={handleBlur} />
               </div>
-            </div>
+            </motion.div>
 
             {/* Payment Method */}
-            <div className="ds-card">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="ds-card"
+            >
               <h2 className="ds-card-title"><CreditCard size={16} /> Phương thức thanh toán</h2>
               <div className="ck-pay-bd">
                 <label className={`ck-pay-opt${payMethod === 'ONLINE' ? ' active' : ''}`}>
@@ -206,7 +217,7 @@ const Checkout = () => {
                       <div className="ck-qr-row"><span>Ngân hàng</span><strong>MB Bank</strong></div>
                       <div className="ck-qr-row"><span>Số tài khoản</span><strong>0948342040</strong></div>
                       <div className="ck-qr-row"><span>Chủ tài khoản</span><strong>VO THAI ANH</strong></div>
-                      <div className="ck-qr-row"><span>Số tiền</span><strong className="checkout-auto-4">{fmt(total)}</strong></div>
+                      <div className="ck-qr-row"><span>Số tiền</span><strong>{fmt(total)}</strong></div>
                       <div className="ck-qr-row"><span>Nội dung</span><strong>Thanh toan BookOne</strong></div>
                     </div>
                   </div>
@@ -219,7 +230,7 @@ const Checkout = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* RIGHT COL (Summary) */}
@@ -228,7 +239,7 @@ const Checkout = () => {
               <h2 className="ds-card-title">Tóm tắt đơn hàng</h2>
               <div className="ck-card-bd">
                 {loadingCart ? (
-                  <Loader size={24} className="ds-spin checkout-auto-6" />
+                  <Loader size={24} className="ds-spin" />
                 ) : (
                   <div className="ck-sum-list">
                     {cartItems.map(it => (
@@ -248,7 +259,7 @@ const Checkout = () => {
 
                 <div className="ck-sum-totals">
                   <div className="ck-sum-tr"><span>Tạm tính</span><span>{fmt(total)}</span></div>
-                  <div className="ck-sum-tr"><span>Phí giao hàng</span><span className="checkout-auto-7">Miễn phí</span></div>
+                  <div className="ck-sum-tr"><span>Phí giao hàng</span><span>Miễn phí</span></div>
                   <div className="ck-sum-tr ck-sum-grand"><span>Tổng cộng</span><span>{fmt(total)}</span></div>
                 </div>
 

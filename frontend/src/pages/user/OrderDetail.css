@@ -47,13 +47,14 @@
 }
 
 /* Generated classes from inline styles */
-.orderdetail-auto-1 { display: flex; justify-content: center; padding: 5rem 0; }
-.orderdetail-auto-2 { color: #1e3a5f; }
-.orderdetail-auto-3 { text-align: center; padding: 4rem 1rem; }
-.orderdetail-auto-4 { margin: 0 auto 1rem; }
-.orderdetail-auto-5 { font-size: 1.2rem; font-weight: 800; color: #111827; margin-bottom: 1.5rem; }
-.orderdetail-auto-6 { display: inline-flex; width: auto; }
-.orderdetail-auto-7 { margin-bottom: 1.25rem; }
-.orderdetail-auto-8 { color: #9ca3af; margin: 0 4px; }
-.orderdetail-auto-9 { position: sticky; top: 80px; }
-.orderdetail-auto-10 { display: flex; alignItems: center; gap: 4px; }
+/* ── Status Loaders & Helpers ── */
+.od-loading-wrap  { display: flex; justify-content: center; padding: 5rem 0; }
+.od-spinner-color { color: #1e3a5f; }
+.od-error-wrap    { text-align: center; padding: 4rem 1rem; }
+.od-error-icon    { margin: 0 auto 1rem; }
+.od-error-title   { font-size: 1.2rem; font-weight: 800; color: #111827; margin-bottom: 1.5rem; }
+.od-error-btn     { display: inline-flex; width: auto; }
+.od-breadcrumb    { margin-bottom: 1.25rem; }
+.od-bread-sep     { color: #9ca3af; margin: 0 4px; }
+.od-summary-sticky { position: sticky; top: 80px; }
+.od-flex-center   { display: flex; align-items: center; gap: 4px; }

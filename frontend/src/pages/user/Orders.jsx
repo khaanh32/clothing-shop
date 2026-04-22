@@ -61,8 +61,8 @@ const Orders = () => {
   }, [user, authLoading, navigate]);
 
   if (loading) return (
-    <div className="ds-page orders-auto-1">
-      <Loader size={38} className="ds-spin orders-auto-2" />
+    <div className="ds-page ords-loading-wrap">
+      <Loader size={38} className="ds-spin ords-spinner-color" />
     </div>
   );
 
@@ -76,11 +76,11 @@ const Orders = () => {
         </div>
 
         {orders.length === 0 ? (
-          <div className="ds-card orders-auto-3">
-            <FileText size={52} className="orders-auto-4" />
-            <h2 className="orders-auto-5">Bạn chưa có đơn hàng nào</h2>
-            <p className="orders-auto-6">Hãy bắt đầu mua sắm để tạo đơn hàng đầu tiên!</p>
-            <button onClick={() => navigate('/category')} className="ds-btn-primary orders-auto-7">
+          <div className="ds-card ords-empty-wrap">
+            <FileText size={52} className="ords-empty-icon" />
+            <h2 className="ords-empty-title">Bạn chưa có đơn hàng nào</h2>
+            <p className="ords-empty-sub">Hãy bắt đầu mua sắm để tạo đơn hàng đầu tiên!</p>
+            <button onClick={() => navigate('/category')} className="ds-btn-primary ords-empty-btn">
               Bắt đầu mua sắm
             </button>
           </div>
@@ -124,7 +124,7 @@ const Orders = () => {
                     <span className="ords-total-label">Tổng cộng</span>
                     <span className="ords-total-val">{fmt(order.thanh_tien || order.tong_tien)}</span>
                   </div>
-                  <div className="orders-auto-8">
+                  <div className="ords-actions-wrap">
                     {order.trang_thai === 'CHỜ_XÁC_NHẬN' && (
                       <button
                         className="ords-cancel-btn"
