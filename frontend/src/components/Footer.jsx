@@ -91,7 +91,7 @@ const Footer = () => {
       {/* ── Bottom bar ── */}
       <div className="ft3-bottom">
         <div className="ft3-bottom-inner">
-          <span>© 2025 BookOne. Thiết kế bởi Nguyễn Trí Cương &amp; Võ Thái Anh.</span>
+          <span>© 2025 BookOne. Thiết kế bởi Nhóm 1.</span>
           <div className="ft3-bottom-links">
             <a href="#">Điều khoản</a>
             <a href="#">Bảo mật</a>
